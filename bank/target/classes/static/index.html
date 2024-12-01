@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Bank Account</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9; /* White background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            flex-direction: column;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2575fc;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        /* Alert style */
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            width: 80%;
+            max-width: 600px;
+            display: none; /* Hidden by default */
+            z-index: 1000; /* Make sure alert is on top */
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+        }
+
+        .alert.info {
+            background-color: #2196F3;
+        }
+
+        /* Form styling */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row div {
+            width: 48%;
+        }
+
+        .form-row label {
+            font-size: 12px; /* Smaller label font */
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            color: #555;
+        }
+
+        .form-row input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #555;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #2575fc;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6a11cb;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #4CAF50;
+        }
+
+        .message.error {
+            color: #f44336;
+        }
+    </style>
+    <script>
+        function createAccount() {
+            var formData = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                otherName: document.getElementById("otherName").value,
+                gender: document.getElementById("gender").value,
+                address: document.getElementById("address").value,
+                stateOfOrigin: document.getElementById("stateOfOrigin").value,
+                email: document.getElementById("email").value,
+                phoneNumber: document.getElementById("phoneNumber").value,
+                alternativePhoneNumber: document.getElementById("alternativePhoneNumber").value,
+                password: document.getElementById("password").value,
+                confirmPassword: document.getElementById("confirmPassword").value
+            };
+
+            fetch("http://localhost:8080/api/user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.responseCode === "00") {
+                    showAlert("Account created successfully!", "success");
+                } else {
+                    showAlert(data.responseMessage, "error");
+                }
+            })
+            .catch(error => {
+                showAlert("Error creating account: " + error.message, "error");
+            });
+        }
+
+        function showAlert(message, type) {
+            var alertDiv = document.getElementById("alert");
+            alertDiv.textContent = message;
+            alertDiv.className = "alert " + type; // Add appropriate class for success/error
+            alertDiv.style.display = "block"; // Show the alert
+
+            // Hide the alert after 5 seconds
+            setTimeout(function() {
+                alertDiv.style.display = "none";
+            }, 5000);
+        }
+    </script>
+</head>
+<body>
+<!-- Alert Message -->
+<div id="alert" class="alert"></div>
+
+<div class="container">
+    <h1>Create Bank Account</h1>
+
+    <form id="createAccountForm" onsubmit="event.preventDefault(); createAccount();">
+        <div class="form-row">
+            <div>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="otherName">Other Name:</label>
+                <input type="text" id="otherName" required>
+            </div>
+            <div>
+                <label for="gender">Gender:</label>
+                <input type="text" id="gender" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+            </div>
+            <div>
+                <label for="stateOfOrigin">State of Origin:</label>
+                <input type="text" id="stateOfOrigin" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div>
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="alternativePhoneNumber">Alternative Phone Number:</label>
+                <input type="text" id="alternativePhoneNumber">
+            </div>
+        </div>
+
+        <!-- Password Fields -->
+        <div class="form-row">
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <div>
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" required>
+            </div>
+        </div>
+
+        <button type="submit">Create Account</button>
+    </form>
+</div>
+</body>
+</html>
